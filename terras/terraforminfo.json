@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "testingpythonclouddep",
+  "private_key_id": "48a3048928ac2b4091d219a31b4a0addd43886b1",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDUB//k9kPhXEZQ\nqOv3lviNCG4SWjrcuMic/9e6rfILeXicKn9GU3PlTFBmHx9tZi2q6AT5WrDWWOzd\nsUgu4wAtMnzia8FcJdK/1d7gpNl+xWZ4aMyZ01UXG8JlDiStg7bhOQdA2vrkgUsz\nNAH7JTPKcxW0ImpTWwvwmiQxlQKgq5IguxfBERQ7MdTnOnvotbsmOZkmotOFpK6O\nbEw4/glTmzoZDqlsnLF8uRQLkhsfkXMXLL5TBpCz8QAew9tMMK7h7Su9tWmT3/ic\nN/nypocLgtl3AlpLVPIIJxGM+ifrbWLi0wxYWpxW86/W3s7ktyk108rQMxWmx/bJ\nqJ6iEVIxAgMBAAECggEAAQDx56QvuOU4BDTWgB4X46W8KF55ub/KZOSUOFVYf0dN\nDPLpn1w6BX0euWHjcNJUl4wb8g+7pSxlaVzjWa0KYLobwo2yx3aM3281gubUTIbY\ng1mngdyMVGhDbd3IuDMNlB9SE48AGMrZ9oLtNdTMqbHxO+mmb6oKy41Uq/6g0JLr\nbEHFr6cI3TuVj5T/KVqApZ5+us7p0vFRCkVSAgh+Gbquzvwd9+F07gjJq36+pEKF\n0JPh9aJGcNrcqZMLsmjNVVcFffTHYI2kTjeWDED34w4tDnKfcK3YrSyj6F+TKC7o\nJDDSBJhhqh0qwAVYFXf30inuorP0z/2+6NeWffdsWQKBgQDsyphXE7z98i+Qu6Sx\nwOklzZNnlUsRUGYcIpiGAOoN7mRa3iQdffIPwRs1G04xRn04ElYA1rNa2/5KN7KH\nc6DyhNvlU3dr5BqCNVqxlR1+2C030k3y9YYqSdtBQAxcDXcbCzpZhesH6lviISYX\n0xOhbxQmOO5JwV4FcxrKtszUWQKBgQDlOzcPmokMJcZNDRvYCsCxAfI4kT1Nak8T\nQV8as2JlsO1mKE7Fo24QJ0WGaPIms61jiEsif6c2+VbiCzRKwwEWWp+RM5IqRHdo\nOYn4cIBTOpsqGGC9UXmNJw4E1grfvRQlmtRO7QrxZO/bdxOt7OPJ6xz+8NB2Lcau\neDKEHGCRmQKBgFXKEOd7fz2CQTluwnykJ9RKZt1geZIMTvJill/2dNYXSMSjNvJ4\nbvrGO9VBz1KK91MZUY98Of7xNXAuPcBVZDp5aDHty5aLTg9exT0RiV4rdDaFOziL\nO9CWcZlyWwf+2OgzaTCGFGEJx8Blwidfkf0rAWHXvn16UVYoHczT7eIBAoGAMtYN\nAfLdjcoazh+oGyNXVGoAE7dyBucankSTGNLLcY3pOAycW4xA7mgnLQW9HgQe4cHq\nF76DkNd/AyZE9IeGiDSUypjLQ4Bnkr+f727TpqGKo61AVvvonvsYSs5FHxVJkIVj\nrBU5pgsifmNMA/hTFAaGKauyL2M7epnBajb425ECgYEAqTKWtM8+9NvomkS6cfix\nt+Jx2SRZcnP9W9PwrTUcaAKVW5DYNxvC3wZw8VSNEHfq+U9tVQ+s+934eD105QN2\n8iK3w+grgBH+TCyPUEi2XrC/kM+MZ2n0F+62I1sS1xy7Yomn0sEcW+89Y8RvI8d7\nI7iF7kgzCa1QXj3LkVA6Ymg=\n-----END PRIVATE KEY-----\n",
+  "client_email": "princetradingservice@testingpythonclouddep.iam.gserviceaccount.com",
+  "client_id": "103849807382662198819",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/princetradingservice%40testingpythonclouddep.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
