@@ -44,7 +44,7 @@ This entire program is deployed to Google Cloud, where it is run for every incre
 
     - **main function**: Based on the technical indicators calculated from the object above, a Forex trade is placed, sold, or nothing happens. Trades are placed through the Oanda_API object. Main function only runs once when called.
 - ## Terras
-  - ### Conatins all the required Terraform files to upload to google storage
+  - ### Conatins all the required Terraform files to create a google cloud storage bucket
 - ## google_defs.py
   - **CLIENT_FILE**: relative path to your JSON authentication file
   - **SCOPES**: The scope URL for accssing Google Cloud APIS (use "https://www.googleapis.com/auth/cloud-platform" is you are unsure on what link to use)
