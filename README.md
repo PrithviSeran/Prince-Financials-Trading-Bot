@@ -18,6 +18,18 @@ pip install numpy
 pip install datetime
 ```
 
+## to Use google cloud services, install these dependencies: 
+```
+pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
+```
+
+* If you are getting the error **google.auth not found**, then download these modules and **move it to your working directory**: https://storage.googleapis.com/prince-financials-modules/google_modules.zip
+
+## to use Terraform, install the the python-terraform module:
+```
+pip install python-terraform
+```
+
 ## Break Down of the Project
 - ## Files_to_be_Imported
   - ### Defs.py
