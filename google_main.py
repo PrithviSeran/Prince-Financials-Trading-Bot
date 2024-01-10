@@ -313,5 +313,4 @@ def main(username):
 
 
 if __name__ == "__main__":
-    print("Testing")
     main()
