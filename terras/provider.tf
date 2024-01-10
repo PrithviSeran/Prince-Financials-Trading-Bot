@@ -2,6 +2,6 @@
 provider "google"{
     credentials = file("terraforminfo.json")
 
-    project = "testingpythonclouddep"
+    project = "GOOGLE CLOUD PROJECT ID"
     region  = "us-central1"
 }
