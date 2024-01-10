@@ -1,0 +1,18 @@
+{
+    "installed":{
+        "client_id": "371343816756-c77j2kmpo2n4f7kact2j7gksl8eattbs.apps.googleusercontent.com",
+        "project_id": "testingpythonclouddep",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "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",
+        "redirect_uris": ["http://localhost"],
+        "store": {
+            "terras path": "/Users/prithviseran/Documents/Forex_Trading_Bot_Server/terras",
+            "defs.py path": "/Users/prithviseran/Documents/Forex_Trading_Bot_Server/Files_to_be_Imported/defs.py",
+            "Files to be imported path": "/Users/prithviseran/Documents/Forex_Trading_Bot_Server/Files_to_be_Imported",
+            "Zip path": "/Users/prithviseran/Documents/Forex_Trading_Bot_Server/Trading_Bot"
+
+        }
+    }
+}
