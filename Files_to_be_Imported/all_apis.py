@@ -99,7 +99,7 @@ class Oanda_API:
         - bool: True if the trade is closed successfully, False otherwise.
         """
         url = f"{defs.OANDA_URL}/accounts/{defs.ACCOUNT_ID}/trades/{trade_id}/close"
-        status_code, json_data = self.make_request(url, verb='post', code_ok=200)
+        status_code, json_data = self.make_request(url, verb='put', code_ok=200)
 
         if status_code != 200:
             return False
