@@ -62,7 +62,24 @@ class Oanda_API:
             print("ERROR")
             return 400, None
 
-    def place_trade(self, units):
+    def __stop_loss_take_profit(self, price, order_type, trade_id):
+
+        url = f"{defs.OANDA_URL}/accounts/{defs.ACCOUNT_ID}/orders"
+
+        data = {
+            "order": {
+                "timeInForce": "GTC",
+                "price": price, 
+                "type": order_type,
+                "tradeID": trade_id
+            }
+        }
+
+        status_code, json_code = self.make_request(url, verb="post", data=json.dumps(data), code_ok=201)
+
+        return status_code, json_code
+
+    def place_trade(self, units, stop_loss = None, take_profit = None):
         """
         Places a trade using the OANDA API.
 
@@ -86,7 +103,18 @@ class Oanda_API:
 
         status_code, json_code = self.make_request(url, verb="post", data=json.dumps(data), code_ok=201)
 
-        return status_code, json_code
+        if status_code != 201:
+            return False
+
+        trade_id = int(json_code["orderFillTransaction"]["tradeOpened"]["tradeID"])
+        if take_profit is not None:
+            if(self.set_sl_tp(take_profit, "TAKE_PROFIT", trade_id) == False):
+                ok = False
+        if stop_loss is not None:
+            if(self.set_sl_tp(stop_loss, "STOP_LOSS", trade_id) == False):
+                ok = False
+
+        return json_code, ok
 
     def close_trade(self, trade_id):
         """

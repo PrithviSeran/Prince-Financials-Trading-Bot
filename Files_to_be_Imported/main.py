@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
-from all_apis import alpha_vantage_API, Oanda_API
+from all_apis import Oanda_API
 import datetime
 import defs
 import base64
