@@ -6,7 +6,7 @@ import requests
 import pandas as pd
 import numpy as np
 import requests
-import defs
+import google_defs
 import json
 import os
 from google_auth_oauthlib.flow import InstalledAppFlow
