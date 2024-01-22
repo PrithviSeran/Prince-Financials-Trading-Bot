@@ -32,6 +32,27 @@ class data_information():
         self.fig.add_vline(x=index, line_width=3, line_dash="dash", line_color=color)
 
 
+    def moving_average_convergence_divergence(self):
+        
+        buffer = {}
+
+        data = pd.DataFrame(buffer)
+
+        # Calculate the 12-period EMA
+        data = data.assign(EMA12 = self.dataset['BC'].ewm(span=12, adjust=False).mean())
+
+        # Calculate the 26-period EMA
+        data = data.assign(EMA26 = self.dataset['BC'].ewm(span=26, adjust=False).mean())
+
+        # Calculate MACD (the difference between 12-period EMA and 26-period EMA)
+        data = data.assign(MACD = data['EMA12'] - data['EMA26'])
+
+        # Calculate the 9-period EMA of MACD (Signal Line)
+        data = data.assign(Signal_Line = data['MACD'].ewm(span=9, adjust=False).mean())
+
+        return data
+
+
     # --- Taken from Henul in StackOverflow ---
     def __ema(self, arr, periods=14, weight=1, init=None):
         leading_na = np.where(~np.isnan(arr))[0][0]
@@ -226,6 +247,8 @@ class data_information():
         k_line = np.array(self.stochastic_oscillator()[0][1:])
         d_line = np.array(self.stochastic_oscillator()[1][1:])
 
+        macd = self.moving_average_convergence_divergence()
+
         technical_analyis_data = {'adx': average_directional_index, 
                                     'aroon_up': arron_up,
                                     'aroon_down': arron_down, 
@@ -237,21 +260,27 @@ class data_information():
 
         technical_dataframe = pd.DataFrame(data=technical_analyis_data)
 
+        technical_dataframe = technical_dataframe.assign(macd_line = macd["MACD"].to_numpy()[14:])
+        technical_dataframe = technical_dataframe.assign(signal_line = macd["Signal_Line"].to_numpy()[14:])
+
+
         return technical_dataframe
 
 
 class indicators():
 
-    def __init__(self):
+    def __init__(self, dataset):
         self.buy_or_sell = False
+        self.dataset = dataset
 
 
-    def enter_new_data(self, directional_index, adx_indicator, aroon, stochastic_oscilator, RSI):
+    def enter_new_data(self, directional_index, adx_indicator, aroon, stochastic_oscilator, RSI, macd):
         self.directional_index = directional_index
         self.adx_indicator = adx_indicator
         self.aroon = aroon
         self.stochastic_oscilator = stochastic_oscilator
         self.RSI = RSI
+        self.macd = macd
         self.indication = {}
 
 
@@ -305,12 +334,31 @@ class indicators():
             self.indication["Stochastic"] = 0
 
 
+    def macd_indicator(self):
+
+        ema200 = self.dataset['BC'].ewm(span=400, adjust=False).mean().to_numpy()
+
+        macd = self.macd[:,0]
+        signal_line = self.macd[:,1]
+        #print("new")
+        #print(self.dataset['BC'].to_numpy()[-1] > ema200[-1])
+        #print(macd[0] < signal_line[0] and macd[1] > signal_line[1])
+        if (macd[0] < signal_line[0] and macd[1] > signal_line[1]) and self.dataset['BC'].to_numpy()[-1] > ema200[-1]:
+            print("here")
+            self.indication["Moving_average_divergence_convergence"] = 1
+        else:
+            self.indication["Moving_average_divergence_convergence"] = 0
+
+        #print(self.indication)
+
+
     def get_trade_action(self, threshold_buy, threshold_sell):
 
         self.RSI_signal()
         self.aroon_signal()
         self.average_directional_index_signal()
         self.stochastic_oscillator_indactor()
+        #self.macd_indicator()
 
 
         if np.sum(list(self.indication.values())) >= threshold_buy and self.buy_or_sell == False:
@@ -335,89 +383,72 @@ class indicators():
         return "Remain!"
 
 
-def main():
-
+def indicator_loop():
     data_info = data_information()
-    market_entry = indicators()
     market_buy_test = Oanda_API()
-    dataset = market_buy_test.fetch_candlesticks('EUR_USD', '100', 'H1')
+    dataset = market_buy_test.fetch_candlesticks('EUR_USD', '500', 'H1')
+    market_entry = indicators(dataset)
     data_info.change_dataset(dataset)
-    #data_info.create_graph()
+    data_info.create_graph()
 
-    #while defs.BOTSTATUS:
-    #for i in range(1, len(dataset) - 14, 1):
-    dataset = market_buy_test.fetch_candlesticks('EUR_USD', '100', 'H1')
+    for i in range(1, len(dataset) - 14, 1):
+        dataset = market_buy_test.fetch_candlesticks('EUR_USD', '500', 'H1')
 
-    data_info.change_dataset(dataset)
+        data_info.change_dataset(dataset)
 
-    technical_dataframe = data_info.make_analysis_dataframe()
+        technical_dataframe = data_info.make_analysis_dataframe()
 
+        market_entry.enter_new_data(
+            directional_index = technical_dataframe[["plus_di", "negative_di"]].to_numpy()[i - 1: i + 1],
+            adx_indicator = technical_dataframe.adx.to_numpy()[i],
+            aroon = technical_dataframe[["aroon_up", "aroon_down"]].to_numpy()[i - 1: i + 1],
+            stochastic_oscilator = technical_dataframe[["K_line", "D_line"]].to_numpy()[i],
+            RSI = technical_dataframe.RSI.to_numpy()[i],
+            macd = technical_dataframe[["macd_line", "signal_line"]].to_numpy()[i - 1: i + 1]
+            )
+        
+        buy_or_sell = market_entry.get_trade_action(2, -2)
 
-    market_entry.enter_new_data(
-        directional_index = technical_dataframe[["plus_di", "negative_di"]].to_numpy()[-2:],
-        adx_indicator = technical_dataframe.adx.to_numpy()[-1],
-        aroon = technical_dataframe[["aroon_up", "aroon_down"]].to_numpy()[-2:],
-        stochastic_oscilator = technical_dataframe[["K_line", "D_line"]].to_numpy()[-1],
-        RSI = technical_dataframe.RSI.to_numpy()[-1]
-        )
-    
-    buy_or_sell = market_entry.get_trade_action(2, -2)
+        if buy_or_sell == "Buy!":
 
-    
-    if buy_or_sell == "Buy!":
+            _, trade_id = market_buy_test.place_trade("100")
 
-        _, trade_id = market_buy_test.place_trade("100")
+            if defs.ORDERCANCELLATION in list(trade_id.keys()):
+                print("Sorry! Order Got Cancelled Due To " + trade_id[defs.ORDERCANCELLATION]['reason'])
 
-        if defs.ORDERCANCELLATION in list(trade_id.keys()):
-            print("Sorry! Order Got Cancelled Due To " + trade_id[defs.ORDERCANCELLATION]['reason'])
+            #data_info.add_indicator(i, "green")
 
-        #data_info.add_indicator(i, "green")
+            trade_id = trade_id['orderCreateTransaction']["id"]
 
-        trade_id = trade_id['orderCreateTransaction']["id"]
+        elif buy_or_sell == "Sell!":
 
-    elif buy_or_sell == "Sell!":
+            data_info.add_indicator(i, "red")
 
-        #data_info.add_indicator(i, "red")
+            market_buy_test.close_trade(trade_id)
 
-        market_buy_test.close_trade(trade_id)
+            #print(market_buy_test.close_trade(trade_id))
 
-        if defs.ORDERCANCELLATION in list(trade_id.keys()):
-            print("Sorry! Order Got Cancelled Due To " + trade_id[defs.ORDERCANCELLATION]['reason'])
+            if defs.ORDERCANCELLATION in list(trade_id.keys()):
+                print("Sorry! Order Got Cancelled Due To " + trade_id[defs.ORDERCANCELLATION]['reason'])
 
+    data_info.fig.show()
     print(buy_or_sell)
     return buy_or_sell
 
-    #data_info.fig.show()
-    #print(buy_or_sell)
 
-"""
-def stochastic_oscillator(dataset):
-    array_close = np.array(dataset['BC'])
-    array_open = np.array(dataset['BO'])
-    array_high = np.array(dataset['BH'])
-    array_low = np.array(dataset['BL'])
+def techincal_analysis_loop():
+    pass
 
-    # Calculate array_highest using numpy maximum.reduceat
-    idx = np.arange(array_high.size)
-    array_highest = np.maximum.reduceat(array_high, idx[:-13], axis=0)[13:]
 
-    # Calculate array_lowest using numpy minimum.reduceat
-    array_lowest = np.minimum.reduceat(array_low, idx[:-13], axis=0)[13:]
 
-    print(array_lowest)
 
-    # KDJ (K line, D line, J line)
-    Kvalue = ((array_close[13:] - array_lowest) * 100 / (array_highest - array_lowest))
 
-    # dperiods for calculate d values
-    dperiods = 3
-    # Use numpy cumsum to calculate the sum efficiently
-    cumsum_Kvalue = np.cumsum(Kvalue)
-    Dvalue = np.concatenate([np.full(dperiods - 1, None), (cumsum_Kvalue[dperiods - 1:] - cumsum_Kvalue[:-dperiods + 1]) / dperiods])
+def main():
 
-    return Kvalue, Dvalue
+    indicator_loop()
 
-"""
+    
+
 
 def princetrading(event, context):
     """Triggered from a message on a Cloud Pub/Sub topic.
@@ -430,22 +461,5 @@ def princetrading(event, context):
     main()
 
 if __name__ == "__main__":
-
-
+   
     main()
-
-    
-    #dataset = pd.read_csv("zfile_to_be_stored/eurusd_hour.csv")
-    """
-    current_forex_info = alpha_vantage_API()
-    data_info = data_information()
-    market_entry = indicators()
-    market_buy_test = Oanda_API()
-    current_forex_info.get_current_info()
-    dataset = current_forex_info.get_current_formated_data()"""
-
-    #print(dataset.BC.to_numpy())
-
-
-
-
