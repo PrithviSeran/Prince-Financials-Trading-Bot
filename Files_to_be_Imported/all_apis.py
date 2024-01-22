@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import requests
-import defs
+import Files_to_be_Imported.defs as defs
 import json
 import os
 
@@ -99,11 +99,13 @@ class Oanda_API:
         - bool: True if the trade is closed successfully, False otherwise.
         """
         url = f"{defs.OANDA_URL}/accounts/{defs.ACCOUNT_ID}/trades/{trade_id}/close"
-        status_code, json_data = self.make_request(url, verb='post', code_ok=200)
+        status_code, json_data = self.make_request(url, verb='put', code_ok=200)
+
+        print(status_code)
 
         if status_code != 200:
             return False
-
+        
         return True
 
     def fetch_candlesticks(self, instrument, candles_count, granularity):
@@ -146,9 +148,7 @@ class Oanda_API:
 def main():
     oanda = Oanda_API()
 
-    candles = oanda.fetch_candlesticks('EUR_USD', '100', 'H1')
-
-    print(candles)
+    oanda.close_trade("100")
 
 
 if __name__ == "__main__":
